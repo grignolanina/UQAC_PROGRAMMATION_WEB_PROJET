@@ -1,53 +1,17 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-  <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
-
-  <PasswordGame :correctPassword="correctPassword" :hint="hint" />
-
-  <!-- <div class="container">
-    <h1>Password Game</h1>
-    <p id="hint">Hint: Some Hint Text</p>
-    <input type="text" id="passwordInput" placeholder="Enter your guess">
-    <button onclick="checkPassword()">Submit</button>
-    <p id="result"></p>
-  </div> -->
+  <PasswordGame />
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
 import PasswordGame from './components/PasswordGame.vue';
 
 
 export default {
   name: 'App',
   components: {
-    // HelloWorld
     PasswordGame
   },
-  data() {
-    return {
-      correctPassword: "secret",
-      hint: "Some Hint Text"
-    }
-  }
 }
-
-//CODE CHAT GPT 
-//const correctPassword = "secret";
-// const hint = "Some Hint Text";
-
-// function checkPassword() {
-//   const userInput = document.getElementById("passwordInput").value;
-//   const resultMessage = document.getElementById("result");
-
-//   if (userInput.toLowerCase() === correctPassword) {
-//     resultMessage.textContent = "Congratulations! You guessed the password!";
-//   } else {
-//     resultMessage.textContent = "Incorrect password. Try again.";
-//   }
-// }
-
-// document.getElementById("hint").textContent = "Hint: " + hint;
 
 </script>
 
