@@ -25,6 +25,11 @@ export default {
 			result: "",
 			isResolved: false,
 			resolvedMessages: [],
+			rules: [
+				{ message: "Le mot de passe doit contenir au moins un chiffre.", test: password => /\d/.test(password) },
+				{ message: "Le mot de passe doit contenir au moins une lettre majuscule.", test: password => /[A-Z]/.test(password) },
+				{ message: "Le mot de passe doit avoir une longueur d'au moins 8 caractères.", test: password => password.length >= 8 },
+			],
 		};
 	},
 	computed: {
@@ -45,99 +50,27 @@ export default {
 			}
 		},
 		isValidPassword(password) {
-			const minLength = 8;
-			const hasUppercase = /[A-Z]/.test(password);
-			const hasNumber = /\d/.test(password);
-
-			return password.length >= minLength && hasUppercase && hasNumber;
+			return this.rules.every(rule => rule.test(password));
 		},
 
 		rulesCheck(password) {
-			const minLength = 8;
-			const hasUppercase = /[A-Z]/.test(password);
-			const hasNumber = /\d/.test(password);
+			let failingRule = null;
+			this.resolvedMessages = [];
 
-			// const rules = ["Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.", "Résolu : Le mot de passe doit contenir au moins une lettre majuscule.", "Résolu : Le mot de passe doit contenir au moins un chiffre."]
+			for (const rule of this.rules) {
+				const { message, test } = rule;
 
-			// for (let i = 0; i < rules.length; i++) {
-			// 	if (password.length > minLength && !this.resolvedMessages.includes(rules[i])) {
-			// 		this.resolvedMessages.push(rules[i]);
-			// 	}
-			// 	if (password.length < minLength && this.resolvedMessages.includes(rules[i])) {
-			// 		const index = this.resolvedMessages.indexOf(rules[i]);
-			// 		this.resolvedMessages[index] += " echec";
-			// 	}
-
-			// 	if (hasUppercase && !this.resolvedMessages.includes(rules[i])) {
-			// 		this.resolvedMessages.push(rules[i]);
-			// 	}
-			// 	if (!hasUppercase && this.resolvedMessages.includes(rules[i])) {
-			// 		const index = this.resolvedMessages.indexOf(rules[i]);
-			// 		this.resolvedMessages[index] += " echec";
-			// 	}
-
-			// 	if (hasNumber && !this.resolvedMessages.includes(rules[i])) {
-			// 		this.resolvedMessages.push(rules[i]);
-			// 	}
-			// 	if (!hasNumber && this.resolvedMessages.includes(rules[i])) {
-			// 		const index = this.resolvedMessages.indexOf(rules[i]);
-			// 		this.resolvedMessages[index] += " echec";
-			// 	}
-			// }
-
-			// //pour pas ajouter 2 fois
-			if (password.length > minLength && !this.resolvedMessages.includes("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.")) {
-				this.resolvedMessages.push("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.");
-			}
-
-			if (password.length < minLength) {
-
-				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.")) {
-					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.");
-					this.resolvedMessages[index] += " echec";
+				if (!test(password)) {
+					failingRule = rule;
+					this.resolvedMessages.push(`${message} echec`);
+				} else {
+					this.resolvedMessages.push(`Résolu : ${message}`);
 				}
-
-				return "Le mot de passe doit avoir une longueur d'au moins 8 caractères.";
 			}
 
-			if (hasUppercase && !this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.")) {
-				this.resolvedMessages.push("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.");
-			}
+			return failingRule ? `Échec : ${failingRule.message}` : "ok";
+		},
 
-
-			if (!hasUppercase) {
-
-				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.")) {
-					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.");
-					this.resolvedMessages[index] += " echec";
-				}
-
-				return "Le mot de passe doit contenir au moins une lettre majuscule.";
-			}
-
-
-			if (hasNumber && !this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins un chiffre.")) {
-				this.resolvedMessages.push("Résolu : Le mot de passe doit contenir au moins un chiffre.");
-			}
-
-			if (!hasNumber) {
-
-				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins un chiffre.")) {
-					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit contenir au moins un chiffre.");
-					this.resolvedMessages[index] += " echec";
-				}
-
-				return "Le mot de passe doit contenir au moins un chiffre.";
-			}
-
-
-
-
-
-
-
-			return "ok";
-		}
 	}
 };
 </script>
