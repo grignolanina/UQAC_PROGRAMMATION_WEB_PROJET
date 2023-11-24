@@ -1,14 +1,14 @@
 <template>
-	<div class="error-container">
-		<p :class="{ 'error-message': true, 'resolved-message': isResolved }">{{ result }}</p>
+	<div class="succes-container">
+		<p :class="{ 'succes-message': true, 'resolved-message': isResolved }">{{ resolvedMessage }}</p>
 	</div>
 </template>
   
 <script>
 export default {
-	name: "ErrorMessage",
+	name: "SuccesMessage",
 	props: {
-		result: String,
+		resolvedMessage: String,
 		isResolved: Boolean
 	}
 };
@@ -27,8 +27,8 @@ export default {
 
 .succes-message {
 	color: green;
-	border: 4px solid black;
-	background: #62b475;
+	/* border: 4px solid black; */
+	/* background: #62b475; */
 }
 </style>
   

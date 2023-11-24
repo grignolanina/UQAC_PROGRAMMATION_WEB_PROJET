@@ -10,8 +10,9 @@ export default {
   name: 'App',
   components: {
     PasswordGame
-  },
+  }
 }
+
 
 </script>
 
