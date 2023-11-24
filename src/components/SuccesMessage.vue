@@ -1,6 +1,6 @@
 <template>
-	<div class="succes-container">
-		<p :class="{ 'succes-message': true, 'resolved-message': isResolved }">{{ resolvedMessage }}</p>
+	<div class="success-container">
+		<p class="success-message">{{ message }}</p>
 	</div>
 </template>
   
@@ -8,27 +8,29 @@
 export default {
 	name: "SuccesMessage",
 	props: {
-		resolvedMessage: String,
-		isResolved: Boolean
+		message: String
 	}
 };
 </script>
   
 <style scoped>
-.error-container {
+.success-container {
 	display: flex;
+	flex-direction: row;
+	align-content: center;
+	justify-content: center;
+	margin: 2% 10%;
+	width: 100%;
+	border: 2px solid green;
+	background: #c3f6cf;
+	border-radius: 15px;
+	box-shadow: 3px 3px 6px #00000025, -5px -5px 10px #ffffff;
+
 }
 
-.error-message {
-	width: 80%;
-	border: 1px solid red;
-	background: #f8d7da;
-}
-
-.succes-message {
+.success-message {
 	color: green;
-	/* border: 4px solid black; */
-	/* background: #62b475; */
+	/* margin: 2% 10%; */
 }
 </style>
   

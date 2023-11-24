@@ -2,27 +2,19 @@
 	<div class="password-game">
 		<h1>Password Game</h1>
 		<input v-model="userInput" @input="handleInput" placeholder="Enter your guess">
-		<ErrorMessage :result="result" :isResolved="isResolved" />
-		<!-- <div v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" class="resolved-message">
-			<SuccesMessage :resolvedMessage="resolvedMessage" :isResolved="isResolved" />
-		</div> -->
-
-		<!-- <SuccesMessage :result="result" :isResolved="isResolved" /> -->
-
-		<div v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" class="resolved-message">
-			{{ resolvedMessage }}
-		</div>
+		<ErrorMessage v-if="userInput" :result="result" :isResolved="isResolved" />
+		<SuccesMessage v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" :message="resolvedMessage" />
 	</div>
 </template>
   
 <script>
 import ErrorMessage from "./ErrorMessage.vue";
-// import SuccesMessage from "./SuccesMessage.vue";
+import SuccesMessage from "./SuccesMessage.vue";
 
 export default {
 	components: {
 		ErrorMessage,
-		// SuccesMessage
+		SuccesMessage
 	},
 	props: {
 		hint: String
@@ -35,16 +27,6 @@ export default {
 			resolvedMessages: [],
 		};
 	},
-	// computed: {
-	// 	newResolvedMessage: function () {
-	// 		let data = [...this.resolvedMessages]
-	// 		data = data.filter(message => !message.includes("echec"));
-	// 		data = data.reverse();
-
-	// 		data = [...new Set(data)];
-	// 		return data
-	// 	}
-	// },
 	computed: {
 		newResolvedMessage: function () {
 			return this.resolvedMessages.filter(message => !message.includes("echec"));
@@ -170,11 +152,11 @@ export default {
 	margin: auto;
 }
 
-.resolved-message {
-	color: green;
-	border: 4px solid green;
-	background: #62b475;
-	margin-top: 10px;
+input {
+	width: 80%;
+	padding: 2% 2%;
+	border-radius: 15px;
+	cursor: pointer;
 }
 </style>
   
