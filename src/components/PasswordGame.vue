@@ -1,21 +1,28 @@
 <template>
 	<div class="password-game">
 		<h1>Password Game</h1>
-		<div class="form-password">
-			<p :text="'Hint: ' + hint"></p>
-			<input v-model="userInput" @input="handleInput" placeholder="Enter your guess">
-		</div>
+		<input v-model="userInput" @input="handleInput" placeholder="Enter your guess">
+		<ErrorMessage :result="result" :isResolved="isResolved" />
+		<!-- <div v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" class="resolved-message">
+			<SuccesMessage :resolvedMessage="resolvedMessage" :isResolved="isResolved" />
+		</div> -->
 
-		<ErrorMessage :result="result" />
+		<!-- <SuccesMessage :result="result" :isResolved="isResolved" /> -->
+
+		<div v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" class="resolved-message">
+			{{ resolvedMessage }}
+		</div>
 	</div>
 </template>
-
+  
 <script>
 import ErrorMessage from "./ErrorMessage.vue";
+// import SuccesMessage from "./SuccesMessage.vue";
 
 export default {
 	components: {
-		ErrorMessage
+		ErrorMessage,
+		// SuccesMessage
 	},
 	props: {
 		hint: String
@@ -24,14 +31,35 @@ export default {
 		return {
 			userInput: "",
 			result: "",
+			isResolved: false,
+			resolvedMessages: [],
 		};
 	},
+	// computed: {
+	// 	newResolvedMessage: function () {
+	// 		let data = [...this.resolvedMessages]
+	// 		data = data.filter(message => !message.includes("echec"));
+	// 		data = data.reverse();
+
+	// 		data = [...new Set(data)];
+	// 		return data
+	// 	}
+	// },
+	computed: {
+		newResolvedMessage: function () {
+			return this.resolvedMessages.filter(message => !message.includes("echec"));
+		}
+	},
+
 	methods: {
 		handleInput() {
 			if (this.isValidPassword(this.userInput)) {
-				this.result = "Félicitations ! Tu as entré un mot de passe correct !";
+				alert("Vous avez gagné !");
+				this.isResolved = true;
+				this.userInput = "";
 			} else {
 				this.result = this.rulesCheck(this.userInput);
+				this.isResolved = false;
 			}
 		},
 		isValidPassword(password) {
@@ -47,24 +75,91 @@ export default {
 			const hasUppercase = /[A-Z]/.test(password);
 			const hasNumber = /\d/.test(password);
 
+			// const rules = ["Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.", "Résolu : Le mot de passe doit contenir au moins une lettre majuscule.", "Résolu : Le mot de passe doit contenir au moins un chiffre."]
+
+			// for (let i = 0; i < rules.length; i++) {
+			// 	if (password.length > minLength && !this.resolvedMessages.includes(rules[i])) {
+			// 		this.resolvedMessages.push(rules[i]);
+			// 	}
+			// 	if (password.length < minLength && this.resolvedMessages.includes(rules[i])) {
+			// 		const index = this.resolvedMessages.indexOf(rules[i]);
+			// 		this.resolvedMessages[index] += " echec";
+			// 	}
+
+			// 	if (hasUppercase && !this.resolvedMessages.includes(rules[i])) {
+			// 		this.resolvedMessages.push(rules[i]);
+			// 	}
+			// 	if (!hasUppercase && this.resolvedMessages.includes(rules[i])) {
+			// 		const index = this.resolvedMessages.indexOf(rules[i]);
+			// 		this.resolvedMessages[index] += " echec";
+			// 	}
+
+			// 	if (hasNumber && !this.resolvedMessages.includes(rules[i])) {
+			// 		this.resolvedMessages.push(rules[i]);
+			// 	}
+			// 	if (!hasNumber && this.resolvedMessages.includes(rules[i])) {
+			// 		const index = this.resolvedMessages.indexOf(rules[i]);
+			// 		this.resolvedMessages[index] += " echec";
+			// 	}
+			// }
+
+			// //pour pas ajouter 2 fois
+			if (password.length > minLength && !this.resolvedMessages.includes("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.")) {
+				this.resolvedMessages.push("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.");
+			}
+
 			if (password.length < minLength) {
+
+				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.")) {
+					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.");
+					this.resolvedMessages[index] += " echec";
+				}
+
 				return "Le mot de passe doit avoir une longueur d'au moins 8 caractères.";
 			}
 
+			if (hasUppercase && !this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.")) {
+				this.resolvedMessages.push("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.");
+			}
+
+
 			if (!hasUppercase) {
+
+				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.")) {
+					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.");
+					this.resolvedMessages[index] += " echec";
+				}
+
 				return "Le mot de passe doit contenir au moins une lettre majuscule.";
 			}
 
+
+			if (hasNumber && !this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins un chiffre.")) {
+				this.resolvedMessages.push("Résolu : Le mot de passe doit contenir au moins un chiffre.");
+			}
+
 			if (!hasNumber) {
+
+				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins un chiffre.")) {
+					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit contenir au moins un chiffre.");
+					this.resolvedMessages[index] += " echec";
+				}
+
 				return "Le mot de passe doit contenir au moins un chiffre.";
 			}
 
-			return "error";
+
+
+
+
+
+
+			return "ok";
 		}
 	}
 };
 </script>
-
+  
 <style scoped>
 .password-game {
 	width: 60%;
@@ -75,19 +170,11 @@ export default {
 	margin: auto;
 }
 
-.form-password {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-around;
-}
-
-input {
-	width: 50%;
-	height: 30px;
-	border-radius: 5px;
-	border: 1px solid #ccc;
-	margin: auto;
+.resolved-message {
+	color: green;
+	border: 4px solid green;
+	background: #62b475;
+	margin-top: 10px;
 }
 </style>
+  
