@@ -2,27 +2,19 @@
 	<div class="password-game">
 		<h1>Password Game</h1>
 		<input v-model="userInput" @input="handleInput" placeholder="Enter your guess">
-		<ErrorMessage :result="result" :isResolved="isResolved" />
-		<!-- <div v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" class="resolved-message">
-			<SuccesMessage :resolvedMessage="resolvedMessage" :isResolved="isResolved" />
-		</div> -->
-
-		<!-- <SuccesMessage :result="result" :isResolved="isResolved" /> -->
-
-		<div v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" class="resolved-message">
-			{{ resolvedMessage }}
-		</div>
+		<ErrorMessage v-if="userInput" :result="result" :isResolved="isResolved" />
+		<SuccesMessage v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" :message="resolvedMessage" />
 	</div>
 </template>
   
 <script>
 import ErrorMessage from "./ErrorMessage.vue";
-// import SuccesMessage from "./SuccesMessage.vue";
+import SuccesMessage from "./SuccesMessage.vue";
 
 export default {
 	components: {
 		ErrorMessage,
-		// SuccesMessage
+		SuccesMessage
 	},
 	props: {
 		hint: String
@@ -33,18 +25,13 @@ export default {
 			result: "",
 			isResolved: false,
 			resolvedMessages: [],
+			rules: [
+				{ message: "Le mot de passe doit contenir au moins un chiffre.", test: password => /\d/.test(password) },
+				{ message: "Le mot de passe doit contenir au moins une lettre majuscule.", test: password => /[A-Z]/.test(password) },
+				{ message: "Le mot de passe doit avoir une longueur d'au moins 8 caractères.", test: password => password.length >= 8 },
+			],
 		};
 	},
-	// computed: {
-	// 	newResolvedMessage: function () {
-	// 		let data = [...this.resolvedMessages]
-	// 		data = data.filter(message => !message.includes("echec"));
-	// 		data = data.reverse();
-
-	// 		data = [...new Set(data)];
-	// 		return data
-	// 	}
-	// },
 	computed: {
 		newResolvedMessage: function () {
 			return this.resolvedMessages.filter(message => !message.includes("echec"));
@@ -63,99 +50,27 @@ export default {
 			}
 		},
 		isValidPassword(password) {
-			const minLength = 8;
-			const hasUppercase = /[A-Z]/.test(password);
-			const hasNumber = /\d/.test(password);
-
-			return password.length >= minLength && hasUppercase && hasNumber;
+			return this.rules.every(rule => rule.test(password));
 		},
 
 		rulesCheck(password) {
-			const minLength = 8;
-			const hasUppercase = /[A-Z]/.test(password);
-			const hasNumber = /\d/.test(password);
+			let failingRule = null;
+			this.resolvedMessages = [];
 
-			// const rules = ["Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.", "Résolu : Le mot de passe doit contenir au moins une lettre majuscule.", "Résolu : Le mot de passe doit contenir au moins un chiffre."]
+			for (const rule of this.rules) {
+				const { message, test } = rule;
 
-			// for (let i = 0; i < rules.length; i++) {
-			// 	if (password.length > minLength && !this.resolvedMessages.includes(rules[i])) {
-			// 		this.resolvedMessages.push(rules[i]);
-			// 	}
-			// 	if (password.length < minLength && this.resolvedMessages.includes(rules[i])) {
-			// 		const index = this.resolvedMessages.indexOf(rules[i]);
-			// 		this.resolvedMessages[index] += " echec";
-			// 	}
-
-			// 	if (hasUppercase && !this.resolvedMessages.includes(rules[i])) {
-			// 		this.resolvedMessages.push(rules[i]);
-			// 	}
-			// 	if (!hasUppercase && this.resolvedMessages.includes(rules[i])) {
-			// 		const index = this.resolvedMessages.indexOf(rules[i]);
-			// 		this.resolvedMessages[index] += " echec";
-			// 	}
-
-			// 	if (hasNumber && !this.resolvedMessages.includes(rules[i])) {
-			// 		this.resolvedMessages.push(rules[i]);
-			// 	}
-			// 	if (!hasNumber && this.resolvedMessages.includes(rules[i])) {
-			// 		const index = this.resolvedMessages.indexOf(rules[i]);
-			// 		this.resolvedMessages[index] += " echec";
-			// 	}
-			// }
-
-			// //pour pas ajouter 2 fois
-			if (password.length > minLength && !this.resolvedMessages.includes("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.")) {
-				this.resolvedMessages.push("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.");
-			}
-
-			if (password.length < minLength) {
-
-				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.")) {
-					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit avoir une longueur d'au moins 8 caractères.");
-					this.resolvedMessages[index] += " echec";
+				if (!test(password)) {
+					failingRule = rule;
+					this.resolvedMessages.push(`${message} echec`);
+				} else {
+					this.resolvedMessages.push(`Résolu : ${message}`);
 				}
-
-				return "Le mot de passe doit avoir une longueur d'au moins 8 caractères.";
 			}
 
-			if (hasUppercase && !this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.")) {
-				this.resolvedMessages.push("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.");
-			}
+			return failingRule ? `Échec : ${failingRule.message}` : "ok";
+		},
 
-
-			if (!hasUppercase) {
-
-				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.")) {
-					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit contenir au moins une lettre majuscule.");
-					this.resolvedMessages[index] += " echec";
-				}
-
-				return "Le mot de passe doit contenir au moins une lettre majuscule.";
-			}
-
-
-			if (hasNumber && !this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins un chiffre.")) {
-				this.resolvedMessages.push("Résolu : Le mot de passe doit contenir au moins un chiffre.");
-			}
-
-			if (!hasNumber) {
-
-				if (this.resolvedMessages.includes("Résolu : Le mot de passe doit contenir au moins un chiffre.")) {
-					const index = this.resolvedMessages.indexOf("Résolu : Le mot de passe doit contenir au moins un chiffre.");
-					this.resolvedMessages[index] += " echec";
-				}
-
-				return "Le mot de passe doit contenir au moins un chiffre.";
-			}
-
-
-
-
-
-
-
-			return "ok";
-		}
 	}
 };
 </script>
@@ -170,11 +85,11 @@ export default {
 	margin: auto;
 }
 
-.resolved-message {
-	color: green;
-	border: 4px solid green;
-	background: #62b475;
-	margin-top: 10px;
+input {
+	width: 80%;
+	padding: 2% 2%;
+	border-radius: 15px;
+	cursor: pointer;
 }
 </style>
   
