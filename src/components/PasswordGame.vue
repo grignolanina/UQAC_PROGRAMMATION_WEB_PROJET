@@ -16,26 +16,47 @@ export default {
 	data() {
 		return {
 			userInput: "",
-			result: ""
+			result: "",
 		};
 	},
 	methods: {
 		checkPassword() {
 			if (this.isValidPassword(this.userInput)) {
-				this.result = "Congratulations! You entered a valid password!";
+				this.result = "Félicitations ! Tu as entré un mot de passe correct !";
 			} else {
-				this.result = "Invalid password. Please check the rules and try again.";
+				this.result = this.rulesCheck(this.userInput);
 			}
 		},
 		isValidPassword(password) {
-			// Définissez vos règles de validation ici
-			// Exemple de règles : longueur minimale de 8 caractères, au moins une lettre majuscule et un chiffre
 			const minLength = 8;
 			const hasUppercase = /[A-Z]/.test(password);
 			const hasNumber = /\d/.test(password);
 
 			return password.length >= minLength && hasUppercase && hasNumber;
+		},
+
+		rulesCheck(password) {
+			const minLength = 8;
+			const hasUppercase = /[A-Z]/.test(password);
+			const hasNumber = /\d/.test(password);
+
+			if (password.length < minLength) {
+				return "Le mot de passe doit avoir une longueur d'au moins 8 caractères.";
+			}
+
+			if (!hasUppercase) {
+				return "Le mot de passe doit contenir au moins une lettre majuscule.";
+			}
+
+			if (!hasNumber) {
+				return "Le mot de passe doit contenir au moins un chiffre.";
+			}
+
+
+			return "error";
 		}
+
+
 	}
 };
 </script>
