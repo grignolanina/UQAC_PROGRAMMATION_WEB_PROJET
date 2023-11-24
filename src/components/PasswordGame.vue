@@ -1,15 +1,22 @@
 <template>
 	<div class="password-game">
 		<h1>Password Game</h1>
-		<p :text="'Hint: ' + hint"></p>
-		<input v-model="userInput" placeholder="Enter your guess">
-		<button @click="checkPassword">Submit</button>
-		<p>{{ result }}</p>
+		<div class="form-password">
+			<p :text="'Hint: ' + hint"></p>
+			<input v-model="userInput" @input="handleInput" placeholder="Enter your guess">
+		</div>
+
+		<ErrorMessage :result="result" />
 	</div>
 </template>
-  
+
 <script>
+import ErrorMessage from "./ErrorMessage.vue";
+
 export default {
+	components: {
+		ErrorMessage
+	},
 	props: {
 		hint: String
 	},
@@ -20,7 +27,7 @@ export default {
 		};
 	},
 	methods: {
-		checkPassword() {
+		handleInput() {
 			if (this.isValidPassword(this.userInput)) {
 				this.result = "Félicitations ! Tu as entré un mot de passe correct !";
 			} else {
@@ -52,14 +59,35 @@ export default {
 				return "Le mot de passe doit contenir au moins un chiffre.";
 			}
 
-
 			return "error";
 		}
-
-
 	}
 };
 </script>
-  
-<style scoped></style>
-  
+
+<style scoped>
+.password-game {
+	width: 60%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: auto;
+}
+
+.form-password {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+}
+
+input {
+	width: 50%;
+	height: 30px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	margin: auto;
+}
+</style>
