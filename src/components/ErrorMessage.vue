@@ -21,5 +21,6 @@ export default {
 .error-message {
 	width: 80%;
 	border: 1px solid red;
+	background: #f8d7da;
 }
 </style>
