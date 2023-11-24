@@ -31,14 +31,16 @@ export default {
 			const minLength = 8;
 			const hasUppercase = /[A-Z]/.test(password);
 			const hasNumber = /\d/.test(password);
+			// const hasSpecialCharacter = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
 
-			return password.length >= minLength && hasUppercase && hasNumber;
+			return password.length >= minLength && hasUppercase && hasNumber; //&& hasSpecialCharacter;
 		},
 
 		rulesCheck(password) {
 			const minLength = 8;
 			const hasUppercase = /[A-Z]/.test(password);
 			const hasNumber = /\d/.test(password);
+			// const hasSpecialCharacter = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);	
 
 			if (password.length < minLength) {
 				return "Le mot de passe doit avoir une longueur d'au moins 8 caractères.";
@@ -51,7 +53,9 @@ export default {
 			if (!hasNumber) {
 				return "Le mot de passe doit contenir au moins un chiffre.";
 			}
-
+			// if (!hasSpecialCharacter) {
+			// 	return "Le mot de passe doit contenir au moins un caractère spécial.";
+			// }
 
 			return "error";
 		}
