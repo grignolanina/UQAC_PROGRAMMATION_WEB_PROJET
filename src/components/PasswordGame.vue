@@ -49,6 +49,8 @@ export default {
 				this.isResolved = false;
 			}
 		},
+
+
 		isValidPassword(password) {
 			return this.rules.every(rule => rule.test(password));
 		},
