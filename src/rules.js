@@ -24,4 +24,33 @@ export function checkOdsNumbersRule(password) {
     return secondAndBeforeLastDigitsAreOdd;
 }
 
+export const getSunsetTime = async function() {
+    const response = await fetch("https://api.sunrise-sunset.org/json?lat=45.504814179128&lng=-73.58723572207455&date=today");
+    if (response.status == 200) {
+    return response.json()
+    } else {
+    new Error(response.statusText)
+    }
+}
+
+export function compareRealSunsetTimeToUserInput(sunsetTime, userInput) {
+    
+    const regex = /(\d{1,2}:\d{2})/;
+    const match = userInput.match(regex);
+    if (match) {
+        const userInputArray = match[0].split(':').map(part => parseInt(part, 10));
+        const [userHours, userMinutes] = userInputArray;
+
+        let sunsetHours = sunsetTime[0];
+        let sunsetMinutes = sunsetTime[1]; 
+
+        const timeDifference = Math.abs((userHours - sunsetHours) * 60 + (userMinutes - sunsetMinutes));
+        const isWithinMargin = timeDifference <= 2;
+        
+        return isWithinMargin;
+    }
+}
+
+
+
 
