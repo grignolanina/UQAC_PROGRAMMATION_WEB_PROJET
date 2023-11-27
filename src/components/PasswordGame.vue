@@ -10,7 +10,7 @@
 <script>
 import ErrorMessage from "./ErrorMessage.vue";
 import SuccesMessage from "./SuccesMessage.vue";
-import { isIngredientPoutineWithUppercase, getDate, checkOdsNumbersRule} from "@/rules";
+import { isIngredientPoutineWithUppercase, getDate, checkOdsNumbersRule, getSunsetTime, compareRealSunsetTimeToUserInput} from "@/rules";
 
 export default {
 	components: {
@@ -22,11 +22,13 @@ export default {
 	},
 	data() {
 		return {
+			sunsetTime:[],
 			userInput: "",
 			result: "",
 			isResolved: false,
 			resolvedMessages: [],
 			rules: [
+				{message : "Le mot de passe doit contenir l'heure du coucher du soleil à cet endroit : lat=45.504814179128, lng=-73.58723572207455, en UTC. (HH:MM)", test: password => compareRealSunsetTimeToUserInput(this.sunsetTime, password)},
 				{message : "Le deuxième et l'avant-dernier chiffre du mot de passe doivent être impairs.", test: password=> checkOdsNumbersRule(password)},
 				{ message:"Le mot de passe doit contenir la date du jour. (JJ/MM/AAAA))", test: password => new RegExp(getDate()).test(password)},
 				{ message: "L'ingrédient de la poutine s'écrit avec une majuscule ! On respecte la poutine !", 
@@ -36,10 +38,10 @@ export default {
 				}},
 				{ message: "Le mot de passe doit contenir au moins un ingrédient de la poutine : Frites, Sauce, FromageSquishSquish.", test: password => /frites|sauce|fromageSquishSquish/i.test(password) },
 				{message : "Le mot de passe doit contenir au moins une couleur de l'arc-en-ciel : rouge, orange, jaune, vert, bleu, violet.", test: password=> /rouge|orange|jaune|vert|bleu|violet/.test(password)},
-				{message : "La somme des chiffres du mot de passe doit être égale à 21.", 			test:password=>password
+				{message : "La somme des chiffres du mot de passe doit être égale à 30.", 			test:password=>password
 									.split("") // Divise la chaîne en un tableau de caractères
 									.filter(char => /\d/.test(char)) // Filtre uniquement les chiffres
-									.reduce((acc, curr) => acc + parseInt(curr), 0) === 21},
+									.reduce((acc, curr) => acc + parseInt(curr), 0) === 35},
 				{message : "Le mot de passe doit commencer par la lettre majuscule. Une phrase commence toujours par une majuscule !", test: password=> /^[A-Z]/.test(password)},
 				{message : "Le mot de passe doit contenir deux chiffres consécutifs.", test: password=> /\d{2}/.test(password)},
 				{message : "Le mot de passe doit contenir au moins un caractère spécial : !@#$%&?.", test: password=> /[!@#$%&?]+/.test(password)},
@@ -53,6 +55,10 @@ export default {
 		newResolvedMessage: function () {
 			return this.resolvedMessages.filter(message => !message.includes("echec"));
 		}
+	},
+
+	created : function() {
+	this.retrieveSunsetTime()
 	},
 
 	methods: {
@@ -89,6 +95,14 @@ export default {
 			//console.log("Règles résolues :", this.resolvedMessages);
 			return failingRule ? `Échec : ${failingRule.message}` : "ok";
 		},
+
+		async retrieveSunsetTime()
+		{
+			let sunsetTime = await getSunsetTime();
+			sunsetTime = sunsetTime["results"]["sunset"];
+			let [sunsetHours, sunsetMinutes] = sunsetTime.split(":");
+			this.sunsetTime = [sunsetHours, sunsetMinutes];
+		}
 	},
 };
 </script>
