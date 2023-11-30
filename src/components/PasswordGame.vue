@@ -78,6 +78,8 @@ export default {
 			this.userInput = "";
 			const password = document.querySelector('.password-game');
 			password.style.display = 'flex';
+			this.isResolved = false;
+			this.rulesCheck(this.userInput);
 
 			const victory = document.querySelector('.password-victory');
 			victory.style.display = 'none';
