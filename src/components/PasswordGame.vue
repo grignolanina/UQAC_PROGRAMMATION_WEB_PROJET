@@ -1,12 +1,15 @@
 <template>
 	<div class="password-game">
-		<h1>Password Game</h1>
+		<h1>The Password Game 2.0</h1>
+		<p>Pour ceux qui n'ont pas réussi The Passeword Game, le vrai</p>
 		<input v-model="userInput" @input="handleInput" placeholder="Enter your guess">
 		<ErrorMessage v-if="userInput" :result="result" :isResolved="isResolved" />
 		<SuccesMessage v-for="resolvedMessage in newResolvedMessage" :key="resolvedMessage" :message="resolvedMessage" />
 	</div>
 	<div class="password-victory">
-		<h1>VICTORY !</h1>
+		<h1 class="victory">VICTORY !</h1>
+		<img class="img-mont-royal" :src="require('@/assets/img/coucher-soleil_mont-royal.jpg')" />
+		<p>On se fait un sunset au Mont Royal pour fêter ça ?</p>
 		<button @click="replay()">Recommencer</button>
 	</div>
 </template>
@@ -15,6 +18,9 @@
 import ErrorMessage from "./ErrorMessage.vue";
 import SuccesMessage from "./SuccesMessage.vue";
 import { isIngredientPoutineWithUppercase, getDate, checkOdsNumbersRule, getSunsetTime, compareRealSunsetTimeToUserInput, getTopTrack, compareToTopMusicChristopheMae, victory } from "@/rules";
+
+// let image = require('@/assets/img/coucher-soleil_mont-royal.jpg');
+
 
 export default {
 	components: {
@@ -78,7 +84,6 @@ export default {
 			this.userInput = "";
 			const password = document.querySelector('.password-game');
 			password.style.display = 'flex';
-			this.isResolved = false;
 			this.rulesCheck(this.userInput);
 
 			const victory = document.querySelector('.password-victory');
@@ -144,8 +149,14 @@ export default {
 }
 
 h1 {
-	color: black;
-	margin: 5% 0 3%;
+	color: cadetblue;
+	margin: 5% 0 0;
+}
+
+p {
+	margin: 0 0 3%;
+	font-style: italic;
+	color: grey;
 }
 
 input {
@@ -162,6 +173,13 @@ input {
 	align-items: center;
 	justify-content: center;
 	margin: auto;
+}
+
+.img-mont-royal {
+	width: 50%;
+	margin: 5% 0 2%;
+	height: auto;
+	border-radius: 15px;
 }
 
 button {

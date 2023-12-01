@@ -102,7 +102,15 @@ export function victory() {
     password.style.display = 'none';
 
     const victory = document.querySelector('.password-victory');
-    victory.style.display = 'block';
+    victory.style.display = 'flex';
+
+    // //recuperer le h1 victory
+    // const victoryTitle = document.querySelector('.password-victory h1');
+    // //ajouter l'image de victoire
+    // const victoryImage = document.createElement('img');
+    // victoryImage.src = image;
+    // victoryImage.alt = 'victory';
+    // victoryTitle.appendChild(victoryImage);
 }
 
 // export function 
