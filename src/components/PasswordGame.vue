@@ -44,7 +44,7 @@ export default {
 						return isIngredientPoutineWithUppercase(hasPoutineIngredients, password);
 					}
 				},
-				{ message: "Le mot de passe doit contenir au moins un ingrédient de la poutine : Frites, Sauce, FromageSquishSquish.", test: password => /frites|sauce|fromageSquishSquish/i.test(password) },
+				{ message: "Le mot de passe doit contenir au moins un ingrédient de la poutine : frites, sauce, fromageSquishSquish.", test: password => /frites|sauce|fromageSquishSquish/i.test(password) },
 				{ message: "Le mot de passe doit contenir au moins une couleur de l'arc-en-ciel : rouge, orange, jaune, vert, bleu, violet.", test: password => /rouge|orange|jaune|vert|bleu|violet/.test(password) },
 				{
 					message: "La somme des chiffres du mot de passe doit être égale à 40.", test: password => password

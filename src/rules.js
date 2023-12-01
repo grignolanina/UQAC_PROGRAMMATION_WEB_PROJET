@@ -1,6 +1,14 @@
+// export function isIngredientPoutineWithUppercase(hasPoutineIngredients, password) {
+//     const ingredientsRegex = /(frites|sauce|fromageSquishSquish)/i;
+//     const hasPoutineIngredientsWithUppercase = ingredientsRegex.test(password) && /[A-Z]/.test(password.match(ingredientsRegex)[0][0]);
+//     const meetsRequirementsPoutine = hasPoutineIngredients && hasPoutineIngredientsWithUppercase;
+//     return meetsRequirementsPoutine;
+// }
+
 export function isIngredientPoutineWithUppercase(hasPoutineIngredients, password) {
     const ingredientsRegex = /(frites|sauce|fromageSquishSquish)/i;
-    const hasPoutineIngredientsWithUppercase = ingredientsRegex.test(password) && /[A-Z]/.test(password.match(ingredientsRegex)[0][0]);
+    const matches = password.match(ingredientsRegex);
+    const hasPoutineIngredientsWithUppercase = matches && matches.every(match => /[A-Z]/.test(match[0]));
     const meetsRequirementsPoutine = hasPoutineIngredients && hasPoutineIngredientsWithUppercase;
     return meetsRequirementsPoutine;
 }
